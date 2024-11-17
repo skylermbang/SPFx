@@ -4,6 +4,7 @@ import type { IFaqProps } from './IFaqProps';
 import { SPFI } from '@pnp/sp';
 import { IFAQ } from '../../../interfaces';
 import { getSP } from '../../../pnpjsConfig';
+import { Accordion } from "@pnp/spfx-controls-react/lib/Accordion";
 
 const Faq = (props: IFaqProps) => {
   const LOG_SOURCE = 'FAQ Webpart';
@@ -15,9 +16,16 @@ const Faq = (props: IFaqProps) => {
 
   const getFAQItems = async () => {
     console.log('context', _sp);
-    const items = await _sp.web.lists.getByTitle(LIST_NAME).items();
+    const items = await _sp.web.lists.getByTitle(LIST_NAME).items.select().orderBy('Letter',true).orderBy('Title',true)();
     console.log('FAQ Items:', items); // Log fetched items
-    setFaqItems(items); // Store items in state
+    setFaqItems((await items).map((item:any)=>{
+      return{
+        Id:item.Id,
+        Title:item.Title,
+        Body:item.Body,
+        Letter:item.Letter
+      }
+    })); // Store items in state
   };
 
   React.useEffect(() => {
@@ -25,11 +33,14 @@ const Faq = (props: IFaqProps) => {
   }, []);
 
   return (
-    <div>
-      <h1>Hello World</h1>
-      <pre>{JSON.stringify(faqItems, null, 2)}</pre> {/* Display fetched items */}
-    </div>
+    <>
+      {faqItems.map((o: IFAQ, index: number) => (
+        <Accordion key={index} title={o.Title} defaultCollapsed={true}>
+          <div>{o.Body}</div> 
+        </Accordion>
+      ))}
+    </>
   );
-};
+ };
 
 export default Faq;
