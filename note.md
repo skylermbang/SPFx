@@ -21,3 +21,5 @@ PropertyFieldListPicker control
 
 npm install @pnp/spfx-property-controls --save --save-exact
 
+what is property?
+
