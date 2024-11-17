@@ -11,9 +11,12 @@ import { IReadonlyTheme } from '@microsoft/sp-component-base';
 import * as strings from 'FaqWebPartStrings';
 import Faq from './components/Faq';
 import { IFaqProps } from './components/IFaqProps';
+import { PropertyFieldListPicker, PropertyFieldListPickerOrderBy } from '@pnp/spfx-property-controls/lib/PropertyFieldListPicker';
+
 
 export interface IFaqWebPartProps {
   description: string;
+  list:string;
 }
 
 export default class FaqWebPart extends BaseClientSideWebPart<IFaqWebPartProps> {
@@ -30,7 +33,9 @@ export default class FaqWebPart extends BaseClientSideWebPart<IFaqWebPartProps> 
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
-        context :this.context
+        context :this.context,
+        listGuid: this.properties.list
+
       }
     );
 
@@ -111,7 +116,23 @@ export default class FaqWebPart extends BaseClientSideWebPart<IFaqWebPartProps> 
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                }),
+                PropertyFieldListPicker('list', {
+                  label: 'Select a list',
+                  selectedList: this.properties.list,
+                  includeHidden: false,
+                  orderBy: PropertyFieldListPickerOrderBy.Title,
+                  disabled: false,
+                  onPropertyChange: this.onPropertyPaneFieldChanged.bind(this),
+                  properties: this.properties,
+                  context: this.context as any,
+                  onGetErrorMessage: (value: string) => {
+                    return value ? '' : 'Please select a list'; // Validation logic
+                  }, 
+                  deferredValidationTime: 0,
+                  key: 'listPickerFieldId'
                 })
+                
               ]
             }
           ]

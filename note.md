@@ -13,3 +13,11 @@ The PnP Accordion Control is a user interface component provided by the PnP SPFx
 
 
 npm install @pnp/spfx-controls-react --save --save-exact
+
+
+Video 4 :
+Show the propoerty control 
+PropertyFieldListPicker control
+
+npm install @pnp/spfx-property-controls --save --save-exact
+

@@ -9,6 +9,7 @@ import { Accordion } from "@pnp/spfx-controls-react/lib/Accordion";
 const Faq = (props: IFaqProps) => {
   const LOG_SOURCE = 'FAQ Webpart';
   const LIST_NAME = 'FAQ_Skyler';
+  console.log(LIST_NAME)
   console.log(LOG_SOURCE);
   const _sp: SPFI = getSP(props.context);
 
@@ -16,7 +17,7 @@ const Faq = (props: IFaqProps) => {
 
   const getFAQItems = async () => {
     console.log('context', _sp);
-    const items = await _sp.web.lists.getByTitle(LIST_NAME).items.select().orderBy('Letter',true).orderBy('Title',true)();
+    const items = await _sp.web.lists.getById(props.listGuid).items.select().orderBy('Letter',true).orderBy('Title',true)();
     console.log('FAQ Items:', items); // Log fetched items
     setFaqItems((await items).map((item:any)=>{
       return{
@@ -29,8 +30,10 @@ const Faq = (props: IFaqProps) => {
   };
 
   React.useEffect(() => {
-    void getFAQItems(); // Call fetch function when component mounts
-  }, []);
+    if (props.listGuid && props.listGuid !==''){
+      void getFAQItems()
+    }
+  }, [props]);
 
   return (
     <>

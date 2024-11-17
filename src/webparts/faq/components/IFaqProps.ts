@@ -6,5 +6,6 @@ export interface IFaqProps {
   environmentMessage: string;
   hasTeamsContext: boolean;
   userDisplayName: string;
-  context:WebPartContext
+  context:WebPartContext;
+  listGuid:string;
 }
