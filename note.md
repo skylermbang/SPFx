@@ -23,3 +23,15 @@ npm install @pnp/spfx-property-controls --save --save-exact
 
 what is property?
 
+
+
+video 5: 
+Webpart + place hodler control 
+
+void??
+
+ 
+context ? what is this ? is it content?
+web part isnt the same thing as add on?  add-in?
+
+clint-side web part? so front only ?
