@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "stop-watch-client-side-solution",
+    "id": "3edfa79e-cb68-4881-93c6-d17cdc330ac8",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.20.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "stop-watch description"
+      },
+      "longDescription": {
+        "default": "stop-watch description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "stop-watch Feature",
+        "description": "The feature that activates elements of the stop-watch solution.",
+        "id": "fa1c75a8-61a2-4336-b420-fa4cf5ada622",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/stop-watch.sppkg"
+  }
+}

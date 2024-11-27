@@ -1,43 +1,39 @@
+import * as React from 'react';
+import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
-
 import {
   type IPropertyPaneConfiguration,
   PropertyPaneTextField
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-import type { IReadonlyTheme } from '@microsoft/sp-component-base';
-import { escape } from '@microsoft/sp-lodash-subset';
+import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
-import styles from './HelloWorldWebPart.module.scss';
-import * as strings from 'HelloWorldWebPartStrings';
+import * as strings from 'StopWatchWebPartStrings';
+import StopWatch from './components/StopWatch';
+import { IStopWatchProps } from './components/IStopWatchProps';
 
-export interface IHelloWorldWebPartProps {
+export interface IStopWatchWebPartProps {
   description: string;
 }
 
-export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorldWebPartProps> {
+export default class StopWatchWebPart extends BaseClientSideWebPart<IStopWatchWebPartProps> {
 
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
 
   public render(): void {
+    const element: React.ReactElement<IStopWatchProps> = React.createElement(
+      StopWatch,
+      {
+        description: this.properties.description,
+        isDarkTheme: this._isDarkTheme,
+        environmentMessage: this._environmentMessage,
+        hasTeamsContext: !!this.context.sdks.microsoftTeams,
+        userDisplayName: this.context.pageContext.user.displayName
+      }
+    );
   
-
-    this.domElement.innerHTML = `
-  
-      <div class="${styles.welcome}">
-        <img alt="" src="${this._isDarkTheme ? require('./assets/welcome-dark.png') : require('./assets/welcome-light.png')}" class="${styles.welcomeImage}" />
-        <h2>Well done, ${escape(this.context.pageContext.user.displayName)}!</h2>
-        <div class="timebox">
-              
-        </div>
-        <div>${this._environmentMessage}</div>
-        <div>  <strong> This is Stop Watch  <strong>${escape(this.properties.description)} </strong></div>
-      </div>
-
-
-      </div>
-    </section>`;
+    ReactDom.render(element, this.domElement);
   }
 
   protected onInit(): Promise<void> {
@@ -91,6 +87,10 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorld
       this.domElement.style.setProperty('--linkHovered', semanticColors.linkHovered || null);
     }
 
+  }
+
+  protected onDispose(): void {
+    ReactDom.unmountComponentAtNode(this.domElement);
   }
 
   protected get dataVersion(): Version {

@@ -1,19 +1,19 @@
 {
   "@microsoft/generator-sharepoint": {
     "plusBeta": false,
-    "isCreatingSolution": false,
+    "isCreatingSolution": true,
     "nodeVersion": "16.20.2",
     "sdksVersions": {
       "@microsoft/microsoft-graph-client": "3.0.2",
       "@microsoft/teams-js": "2.24.0"
     },
     "version": "1.20.0",
-    "libraryName": "hello-world-2",
-    "libraryId": "9bd45cbe-c829-4555-81c1-b2ce03e85133",
+    "libraryName": "stop-watch",
+    "libraryId": "3edfa79e-cb68-4881-93c6-d17cdc330ac8",
     "environment": "spo",
     "packageManager": "npm",
-    "solutionName": "hello-world-2",
-    "solutionShortDescription": "hello-world-2 description",
+    "solutionName": "stop-watch",
+    "solutionShortDescription": "stop-watch description",
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
     "componentType": "webpart"
