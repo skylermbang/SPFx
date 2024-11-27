@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "16.20.2",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.24.0"
+    },
+    "version": "1.20.0",
+    "libraryName": "hello-world-2",
+    "libraryId": "9bd45cbe-c829-4555-81c1-b2ce03e85133",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "hello-world-2",
+    "solutionShortDescription": "hello-world-2 description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
