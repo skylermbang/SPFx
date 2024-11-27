@@ -1,8 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import styles from './StopWatch.module.scss';
 import type { IStopWatchProps } from './IStopWatchProps';
 import { escape } from '@microsoft/sp-lodash-subset';
+import { spfi, SPFx } from "@pnp/sp";
+import "@pnp/sp/webs";
+import "@pnp/sp/lists";
+import "@pnp/sp/items";
 
 interface IStopWatchState {
   timeSecond: number;
@@ -13,6 +16,7 @@ interface IStopWatchState {
 
 export default class StopWatch extends React.Component<IStopWatchProps, IStopWatchState> {
   private timer: any = null;
+  private sp: ReturnType<typeof spfi>;
 
   constructor(props: IStopWatchProps) {
     super(props);
@@ -24,30 +28,27 @@ export default class StopWatch extends React.Component<IStopWatchProps, IStopWat
       timeHour: 0,
       isRunning: false,
     };
+
+    // Initialize PnPJS context
+    this.sp = spfi().using(SPFx(this.props.context));
   }
 
   componentWillUnmount() {
-    // Clear the timer when the component is unmounted
     if (this.timer) {
       clearInterval(this.timer);
     }
   }
 
-  // Start or stop the stopwatch
   handleStartStop = () => {
     if (this.state.isRunning) {
-      // Stop the timer
       clearInterval(this.timer);
       this.timer = null;
     } else {
-      // Start the timer
       this.timer = setInterval(() => {
         let { timeSecond, timeMinute, timeHour } = this.state;
 
-        // Increment seconds
         timeSecond++;
 
-        // Handle rollover for minutes and hours
         if (timeSecond === 60) {
           timeSecond = 0;
           timeMinute++;
@@ -57,18 +58,14 @@ export default class StopWatch extends React.Component<IStopWatchProps, IStopWat
           timeHour++;
         }
 
-        // Update the state
         this.setState({ timeSecond, timeMinute, timeHour });
       }, 1000);
     }
 
-    // Toggle the `isRunning` state
     this.setState({ isRunning: !this.state.isRunning });
   };
 
-  // Reset the stopwatch
   handleReset = () => {
-    // Clear the timer and reset the state
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;
@@ -82,16 +79,28 @@ export default class StopWatch extends React.Component<IStopWatchProps, IStopWat
     });
   };
 
-  // Format time to always display as two digits
+  // Format time
   formatTime(value: number): string {
     return value < 10 ? `0${value}` : `${value}`;
   }
 
-  handleLog = () => {
+  // Log time to SharePoint list using PnPJS
+  handleLog = async () => {
     const { timeHour, timeMinute, timeSecond } = this.state;
-    console.log(`Logging time: ${timeHour}:${timeMinute}:${timeSecond}`);
+    const timeLogged = `${this.formatTime(timeHour)}:${this.formatTime(timeMinute)}:${this.formatTime(timeSecond)}`;
+
+    try {
+      const item = await this.sp.web.lists.getByTitle("stopWatch").items.add({
+        Title: `Logged by ${this.props.userDisplayName}`,
+        TimeLogged: timeLogged, // Assuming you have a `TimeLogged` column in your list
+      });
+
+      console.log("Time logged successfully:", item);
+    } catch (error) {
+      console.error("Error logging time:", error);
+    }
   };
-  
+
   render(): React.ReactElement<IStopWatchProps> {
     const { environmentMessage, hasTeamsContext, userDisplayName } = this.props;
     const { timeSecond, timeMinute, timeHour, isRunning } = this.state;
@@ -106,7 +115,7 @@ export default class StopWatch extends React.Component<IStopWatchProps, IStopWat
           <div className={styles.buttonContainer}>
             <button onClick={this.handleStartStop}>{isRunning ? 'STOP' : 'START'}</button>
             <button onClick={this.handleReset}>RESET</button>
-            <button onClick={this.handleLog}> Log</button>
+            <button onClick={this.handleLog}>Log</button>
           </div>
           <div>{environmentMessage}</div>
         </div>

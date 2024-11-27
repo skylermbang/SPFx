@@ -29,7 +29,9 @@ export default class StopWatchWebPart extends BaseClientSideWebPart<IStopWatchWe
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
+        userDisplayName: this.context.pageContext.user.displayName,
+        context: this.context, // Pass the SPFx context
+
       }
     );
   
