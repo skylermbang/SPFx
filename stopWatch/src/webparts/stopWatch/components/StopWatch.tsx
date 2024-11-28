@@ -7,17 +7,21 @@ import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import "@pnp/sp/items";
 
+
 interface IStopWatchState {
   timeSecond: number;
   timeMinute: number;
   timeHour: number;
   isRunning: boolean;
+  listTime: any[];
 }
 
 export default class StopWatch extends React.Component<IStopWatchProps, IStopWatchState> {
   private timer: any = null;
   private sp: ReturnType<typeof spfi>;
 
+
+  
   constructor(props: IStopWatchProps) {
     super(props);
 
@@ -27,12 +31,28 @@ export default class StopWatch extends React.Component<IStopWatchProps, IStopWat
       timeMinute: 0,
       timeHour: 0,
       isRunning: false,
+      listTime:[],
     };
 
     // Initialize PnPJS context
     this.sp = spfi().using(SPFx(this.props.context));
   }
 
+
+  fetchListItems = async () => {
+    try {
+
+      const items: any[] = await this.sp.web.lists.getByTitle("stopWatch").items();
+      this.setState({ listTime: items });
+      console.log(items)
+    } catch (error) {
+      console.error("Error fetching list items:", error);
+    }
+  };
+
+  async componentDidMount() {
+    await this.fetchListItems();
+  }
   componentWillUnmount() {
     if (this.timer) {
       clearInterval(this.timer);
@@ -101,6 +121,23 @@ export default class StopWatch extends React.Component<IStopWatchProps, IStopWat
     }
   };
 
+  ListLogs(){
+    const {listTime} = this.state;
+    if(listTime.length === 0){
+      return <h3> No Previous Records</h3>
+    }
+    return (
+      <ul>
+        {listTime.map((time)=>(
+          <li key={time.Id}>
+            {time.TimeLogged}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+
   render(): React.ReactElement<IStopWatchProps> {
     const { environmentMessage, hasTeamsContext, userDisplayName } = this.props;
     const { timeSecond, timeMinute, timeHour, isRunning } = this.state;
@@ -117,8 +154,12 @@ export default class StopWatch extends React.Component<IStopWatchProps, IStopWat
             <button onClick={this.handleReset}>RESET</button>
             <button onClick={this.handleLog}>Log</button>
           </div>
-          <div>{environmentMessage}</div>
         </div>
+        <div>
+        <h3>Logged Times</h3>
+        {this.ListLogs()}
+        </div>
+        <div>{environmentMessage}</div>
       </section>
     );
   }
